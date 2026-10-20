@@ -111,13 +111,68 @@ Manual checks:
 - Single- and multi-answer questions work, including reshuffle and score.
 - Navigating between quiz IDs resets gameplay state.
 
-## Deployment
+## Deployment (Railway)
 
-Deployment is not configured yet. When deploying:
+This repository is an isolated monorepo. Railway must analyze each app from its own
+root directory; deploying from the repository root will fail with
+`Railpack could not determine how to build the app`.
 
-1. Deploy PostgreSQL.
-2. Deploy the backend Docker image with `DATABASE_URL`, `CORS_ORIGINS`, and AI keys.
-3. Run `alembic upgrade head` so the seed migration runs.
-4. Deploy the frontend with `VITE_API_BASE_URL` set to the public API.
-5. Add a SPA rewrite/fallback for React Router.
-6. Add the public link to this README.
+Create a Railway project with PostgreSQL and two services connected to this GitHub
+repository on the `main` branch.
+
+### Backend service
+
+- **Root Directory:** `/backend`
+- **Watch Paths:** `/backend/**`
+- **Healthcheck Path:** `/health`
+- **Pre-deploy Command:** `alembic upgrade head`
+- **Wait for CI:** enabled
+
+Railway builds `backend/Dockerfile` and starts uvicorn on Railway's `$PORT`.
+The pre-deploy command creates the schema and seeds the 100 demo quizzes.
+
+Variables:
+
+```text
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+CORS_ORIGINS=https://${{frontend.RAILWAY_PUBLIC_DOMAIN}}
+AI_PROVIDER=groq
+GROQ_API_KEY=<secret>
+GROQ_MODEL=openai/gpt-oss-120b
+GEMINI_API_KEY=<secret>
+GEMINI_MODEL=gemini-3.8-flash
+AI_CHUNK_SIZE=15
+```
+
+### Frontend service
+
+- **Root Directory:** `/frontend`
+- **Watch Paths:** `/frontend/**`
+- **Healthcheck Path:** `/health`
+- **Wait for CI:** enabled
+
+Railpack detects Vite, runs `pnpm build`, and serves `dist` with Caddy, including
+SPA fallback for React Router.
+
+Variables:
+
+```text
+VITE_API_BASE_URL=https://${{backend.RAILWAY_PUBLIC_DOMAIN}}
+RAILPACK_SPA_OUTPUT_DIR=dist
+RAILPACK_NODE_VERSION=24
+```
+
+`VITE_API_BASE_URL` is baked in at build time, so changing it requires a redeploy.
+
+### Domains and CI/CD
+
+Generate a public domain for both services. Reference variables resolve
+`RAILWAY_PUBLIC_DOMAIN` automatically, including the `https://` prefix needed for
+CORS and browser requests.
+
+GitHub Actions runs frontend lint/build and backend migration/smoke checks on
+pushes to `main` and on pull requests. With **Wait for CI** enabled, Railway holds
+deployments until those checks pass. Configure these settings in the Railway
+dashboard; Railway's Config as Code files are deprecated for new services.
+
+After the first deploy, add the public frontend URL to this README.
