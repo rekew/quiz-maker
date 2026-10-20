@@ -11,21 +11,21 @@ interface PaginationProps {
 export function Pagination({ page, totalPages, disabled = false, onPageChange }: PaginationProps) {
   if (totalPages <= 1) return null;
   return (
-    <nav className="pagination" aria-label="Pagination">
+    <nav className="mt-6 flex flex-wrap items-center justify-center gap-3" aria-label="Pagination">
       <Button
         onClick={() => onPageChange(page - 1)}
         disabled={disabled || page <= 1}
       >
-        <ChevronLeft size={16} /> Previous
+        <ChevronLeft /> Previous
       </Button>
-      <span className="muted small">
+      <span className="text-sm text-muted-foreground">
         Page {page} of {totalPages}
       </span>
       <Button
         onClick={() => onPageChange(page + 1)}
         disabled={disabled || page >= totalPages}
       >
-        Next <ChevronRight size={16} />
+        Next <ChevronRight />
       </Button>
     </nav>
   );

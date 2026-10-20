@@ -1,3 +1,4 @@
+import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "./Button";
 
 interface ErrorBannerProps {
@@ -7,13 +8,16 @@ interface ErrorBannerProps {
 
 export function ErrorBanner({ message, onRetry }: ErrorBannerProps) {
   return (
-    <div className="error-banner" role="alert">
-      <span>{message}</span>
+    <Alert variant="destructive" className="my-3">
+      <AlertTitle>Something went wrong</AlertTitle>
+      <AlertDescription>{message}</AlertDescription>
       {onRetry && (
-        <Button variant="ghost" onClick={onRetry}>
-          Retry
-        </Button>
+        <AlertAction>
+          <Button size="sm" onClick={onRetry}>
+            Retry
+          </Button>
+        </AlertAction>
       )}
-    </div>
+    </Alert>
   );
 }

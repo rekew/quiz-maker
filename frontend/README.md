@@ -1,6 +1,6 @@
 # Quiziz Frontend
 
-React 19 + TypeScript SPA for creating, browsing, and playing quizzes.
+React 19 + TypeScript SPA for creating, browsing, and playing quizzes, styled with Tailwind CSS and shadcn/ui.
 
 ## Scripts
 
@@ -29,9 +29,13 @@ src/features/quiz-list/      library page, store, split dialog
 src/features/quiz-create/    controlled add-quiz form
 src/features/quiz-play/      detail, gameplay, result
 src/shared/api/              typed API client
+src/components/ui/          shadcn/ui primitives
+src/lib/                    shadcn utility helpers
 src/shared/components/       reusable UI components
 src/shared/lib/              shuffle and answer helpers
 ```
+
+Styling uses Tailwind utilities and shadcn/ui components. `src/index.css` only contains the Tailwind/shadcn theme setup; do not add custom component classes.
 
 ## Library behavior
 

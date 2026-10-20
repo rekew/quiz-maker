@@ -6,7 +6,7 @@ Users can paste free-form questions, let an AI provider normalize them into a qu
 
 ## Stack
 
-- **Frontend:** React 19, TypeScript, Vite, React Router, Zustand, Lucide, plain CSS
+- **Frontend:** React 19, TypeScript, Vite, React Router, Zustand, Lucide, Tailwind CSS, shadcn/ui
 - **Backend:** FastAPI, SQLAlchemy async, Alembic, PostgreSQL, Pydantic
 - **AI parsing:** Groq or Gemini (configurable)
 

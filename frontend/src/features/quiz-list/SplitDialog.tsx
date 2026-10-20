@@ -41,8 +41,8 @@ export function SplitDialog({ quiz, onClose }: SplitDialogProps) {
 
   return (
     <Modal title="Split into smaller blocks" onClose={onClose}>
-      <form onSubmit={submit}>
-        <p className="muted">
+      <form className="grid gap-4" onSubmit={submit}>
+        <p className="text-sm text-muted-foreground">
           {total} questions → {parts.length > 0 && <b>{parts.join(" + ")}</b>}
           {parts.length > 0 && ` (${parts.length} blocks)`}
         </p>
@@ -57,23 +57,23 @@ export function SplitDialog({ quiz, onClose }: SplitDialogProps) {
             setChunkSize(Number.isFinite(value) ? value : 0);
           }}
         />
-        {!valid && <p className="error">Chunk size must be between 2 and {total - 1}.</p>}
+        {!valid && <p className="text-sm text-destructive">Chunk size must be between 2 and {total - 1}.</p>}
         <TextField
           label="Folder name"
           value={folderTitle}
           maxLength={300}
           onChange={(event) => setFolderTitle(event.target.value)}
         />
-        <p className="muted small">
+        <p className="text-xs text-muted-foreground">
           The original block will be replaced by {parts.length} small blocks in one folder.
         </p>
         {error && <ErrorBanner message={error} />}
-        <div className="row">
+        <div className="flex flex-wrap justify-end gap-2">
           <Button onClick={onClose} disabled={saving}>
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={!valid || saving}>
-            <Scissors size={16} /> {saving ? "Splitting…" : "Split"}
+            <Scissors /> {saving ? "Splitting…" : "Split"}
           </Button>
         </div>
       </form>
