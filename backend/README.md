@@ -44,3 +44,32 @@ See `.env.example`. Important values:
 - `GROQ_API_KEY` / `GEMINI_API_KEY`
 
 Do not commit `.env`.
+
+## Railway deployment
+
+Deploy this directory as a Railway service with **Root Directory** set to
+`/backend`. Railway uses `Dockerfile`, which installs dependencies from
+`uv.lock` and binds uvicorn to `$PORT`.
+
+Service settings:
+
+- Healthcheck Path: `/health`
+- Pre-deploy Command: `alembic upgrade head`
+- Watch Paths: `/backend/**`
+- Wait for CI: enabled
+
+Variables:
+
+```text
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+CORS_ORIGINS=https://${{frontend.RAILWAY_PUBLIC_DOMAIN}}
+AI_PROVIDER=groq
+GROQ_API_KEY=<secret>
+GROQ_MODEL=openai/gpt-oss-120b
+GEMINI_API_KEY=<secret>
+GEMINI_MODEL=gemini-3.8-flash
+AI_CHUNK_SIZE=15
+```
+
+Migrations run before the new container receives traffic. If a migration fails,
+Railway keeps the previous deployment running.

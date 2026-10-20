@@ -25,12 +25,12 @@ The backend must be running for the app to load quizzes.
 
 ```text
 src/app/                     React Router setup
-src/features/quiz-list/      library page, store, split dialog
+src/components/ui/           shadcn/ui primitives
 src/features/quiz-create/    controlled add-quiz form
+src/features/quiz-list/      library page, store, split dialog
 src/features/quiz-play/      detail, gameplay, result
+src/lib/                     shadcn utility helpers
 src/shared/api/              typed API client
-src/components/ui/          shadcn/ui primitives
-src/lib/                    shadcn utility helpers
 src/shared/components/       reusable UI components
 src/shared/lib/              shuffle and answer helpers
 ```
@@ -44,3 +44,27 @@ Styling uses Tailwind utilities and shadcn/ui components. `src/index.css` only c
 - Sorting by date, title, or question count
 - Server-side pagination
 - Separate loading, error, empty-library, and no-results states
+
+## Railway deployment
+
+Deploy this directory as a separate Railway service with **Root Directory** set
+to `/frontend`. Railpack detects Vite, runs `pnpm build`, and serves `dist` with
+Caddy. The generated Caddy config handles SPA fallback for React Router and
+responds to `/health`.
+
+Service settings:
+
+- Healthcheck Path: `/health`
+- Watch Paths: `/frontend/**`
+- Wait for CI: enabled
+
+Variables:
+
+```text
+VITE_API_BASE_URL=https://${{backend.RAILWAY_PUBLIC_DOMAIN}}
+RAILPACK_SPA_OUTPUT_DIR=dist
+RAILPACK_NODE_VERSION=24
+```
+
+`VITE_API_BASE_URL` is embedded during the build. Changing it requires a new
+deployment.
