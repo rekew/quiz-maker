@@ -43,12 +43,16 @@ export function NewQuizPage() {
   }
 
   return (
-    <div className="page">
-      <header className="topbar">
-        <Link to="/" className="btn"><ArrowLeft size={16} /> Library</Link>
-        <h1>New quiz</h1>
+    <div className="mx-auto w-full max-w-3xl px-4 pt-6 pb-16">
+      <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <Button asChild>
+          <Link to="/">
+            <ArrowLeft /> Library
+          </Link>
+        </Button>
+        <h1 className="text-2xl font-bold tracking-tight">New quiz</h1>
       </header>
-      <form onSubmit={submit}>
+      <form className="grid gap-4" onSubmit={submit}>
         <TextField
           label="Title"
           value={title}
@@ -64,10 +68,12 @@ export function NewQuizPage() {
           hint="Example: number each question, list options a–d, then add a correct line."
         />
         {error && <ErrorBanner message={error} />}
-        <div className="row">
-          <Button onClick={() => setRaw(EXAMPLE)} disabled={loading}>Fill example</Button>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={() => setRaw(EXAMPLE)} disabled={loading}>
+            Fill example
+          </Button>
           <Button type="submit" variant="primary" disabled={loading || !raw.trim()}>
-            <Sparkles size={16} /> {loading ? "Parsing via AI…" : "Parse & save"}
+            <Sparkles /> {loading ? "Parsing via AI…" : "Parse & save"}
           </Button>
         </div>
       </form>

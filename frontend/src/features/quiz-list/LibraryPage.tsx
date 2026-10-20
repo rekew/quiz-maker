@@ -96,16 +96,32 @@ export function LibraryPage() {
   const hasNoResults = status === "success" && total === 0 && !isEmptyLibrary;
   const showErrorState = status === "error" && items.length === 0;
 
+  const folderOptions = [
+    { value: "all", label: "All folders" },
+    { value: "unfiled", label: "Unfiled" },
+    ...folders.map((folder) => ({ value: folder.id, label: folder.title })),
+  ];
+
+  const sortOptions = [
+    { value: "newest", label: "Newest first" },
+    { value: "oldest", label: "Oldest first" },
+    { value: "title_asc", label: "Title A–Z" },
+    { value: "title_desc", label: "Title Z–A" },
+    { value: "questions_desc", label: "Most questions" },
+  ];
+
   return (
-    <div className="page">
-      <header className="topbar">
-        <h1>Quiziz</h1>
-        <Link to="/new" className="btn primary">
-          <Plus size={16} /> New quiz
-        </Link>
+    <div className="mx-auto w-full max-w-3xl px-4 pt-6 pb-16">
+      <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold tracking-tight">Quiziz</h1>
+        <Button asChild variant="primary">
+          <Link to="/new">
+            <Plus /> New quiz
+          </Link>
+        </Button>
       </header>
 
-      <section className="toolbar" aria-label="Library filters">
+      <section className="mb-4 grid gap-3 sm:grid-cols-[2fr_1fr_1fr]" aria-label="Library filters">
         <TextField
           label="Search"
           type="search"
@@ -116,38 +132,26 @@ export function LibraryPage() {
         <SelectField
           label="Folder"
           value={folderFilter}
-          onChange={(event) => setFolderFilter(event.target.value)}
-        >
-          <option value="all">All folders</option>
-          <option value="unfiled">Unfiled</option>
-          {folders.map((folder) => (
-            <option key={folder.id} value={folder.id}>
-              {folder.title}
-            </option>
-          ))}
-        </SelectField>
+          onValueChange={setFolderFilter}
+          options={folderOptions}
+        />
         <SelectField
           label="Sort"
           value={sort}
-          onChange={(event) => setSort(event.target.value as typeof sort)}
-        >
-          <option value="newest">Newest first</option>
-          <option value="oldest">Oldest first</option>
-          <option value="title_asc">Title A–Z</option>
-          <option value="title_desc">Title Z–A</option>
-          <option value="questions_desc">Most questions</option>
-        </SelectField>
+          onValueChange={(value) => setSort(value as typeof sort)}
+          options={sortOptions}
+        />
       </section>
 
       {selectedFolder && (
-        <div className="row">
+        <div className="mb-4 flex flex-wrap gap-2">
           <Button
             variant="danger"
             onClick={() =>
               setPendingDelete({ kind: "folder", id: selectedFolder.id, title: selectedFolder.title })
             }
           >
-            <Trash2 size={16} /> Delete selected folder
+            <Trash2 /> Delete selected folder
           </Button>
         </div>
       )}
@@ -156,7 +160,7 @@ export function LibraryPage() {
       {error && items.length > 0 && <ErrorBanner message={error} onRetry={() => void load()} />}
 
       {!isLoading && !showErrorState && (
-        <p className="muted small result-count">
+        <p className="mb-3 text-sm text-muted-foreground">
           Showing {items.length} of {total} quizzes
           {isFetching && " · Updating…"}
         </p>
@@ -169,17 +173,27 @@ export function LibraryPage() {
           variant="error"
           title="Could not load quizzes"
           message={error ?? "Check that the backend is running."}
-          action={<Button variant="primary" onClick={() => void load()}>Retry</Button>}
+          action={
+            <Button variant="primary" onClick={() => void load()}>
+              Retry
+            </Button>
+          }
         />
       )}
 
       {isEmptyLibrary && (
         <StatePanel
           variant="empty"
-          icon={<ListOrdered size={40} />}
+          icon={<ListOrdered className="size-10" />}
           title="No quizzes yet"
           message="Paste your questions to create the first quiz."
-          action={<Link to="/new" className="btn primary"><Plus size={16} /> Create quiz</Link>}
+          action={
+            <Button asChild variant="primary">
+              <Link to="/new">
+                <Plus /> Create quiz
+              </Link>
+            </Button>
+          }
         />
       )}
 
@@ -188,13 +202,17 @@ export function LibraryPage() {
           variant="empty"
           title="No matching quizzes"
           message="Try a different search or folder."
-          action={<Button variant="primary" onClick={clearFilters}>Clear filters</Button>}
+          action={
+            <Button variant="primary" onClick={clearFilters}>
+              Clear filters
+            </Button>
+          }
         />
       )}
 
       {!isLoading && !showErrorState && items.length > 0 && (
         <>
-          <div className="grid">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((quiz) => (
               <QuizCard
                 key={quiz.id}

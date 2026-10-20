@@ -12,13 +12,19 @@ import { QuizResult } from "./QuizResult";
 
 type PlayStatus = "loading" | "error" | "detail" | "empty" | "playing" | "result";
 
+const pageClass = "mx-auto w-full max-w-3xl px-4 pt-6 pb-16";
+
 export function PlayPage() {
   const { id } = useParams();
   if (!id) {
     return (
-      <div className="page">
+      <div className={pageClass}>
         <StatePanel variant="error" title="Quiz not found" message="The quiz link is missing an ID." />
-        <Link to="/" className="btn">Back to library</Link>
+        <div className="flex justify-center">
+          <Button asChild>
+            <Link to="/">Back to library</Link>
+          </Button>
+        </div>
       </div>
     );
   }
@@ -123,7 +129,7 @@ function QuizSession({ quizId }: { quizId: string }) {
 
   if (status === "loading") {
     return (
-      <div className="page">
+      <div className={pageClass}>
         <StatePanel variant="loading" />
       </div>
     );
@@ -131,17 +137,19 @@ function QuizSession({ quizId }: { quizId: string }) {
 
   if (status === "error") {
     return (
-      <div className="page">
+      <div className={pageClass}>
         <StatePanel
           variant="error"
           title="Could not load quiz"
           message={error ?? "Please try again."}
           action={
-            <div className="row result-actions">
+            <div className="flex flex-wrap justify-center gap-2">
               <Button variant="primary" onClick={reload}>
                 Retry
               </Button>
-              <Link to="/" className="btn">Library</Link>
+              <Button asChild>
+                <Link to="/">Library</Link>
+              </Button>
             </div>
           }
         />
@@ -151,12 +159,16 @@ function QuizSession({ quizId }: { quizId: string }) {
 
   if (status === "empty" || !quiz) {
     return (
-      <div className="page">
+      <div className={pageClass}>
         <StatePanel
           variant="empty"
           title="This quiz has no questions"
           message="Create another quiz or add questions to this one."
-          action={<Link to="/" className="btn primary">Back to library</Link>}
+          action={
+            <Button asChild variant="primary">
+              <Link to="/">Back to library</Link>
+            </Button>
+          }
         />
       </div>
     );
@@ -164,9 +176,13 @@ function QuizSession({ quizId }: { quizId: string }) {
 
   if (status === "detail") {
     return (
-      <div className="page">
-        <header className="topbar">
-          <Link to="/" className="btn"><ArrowLeft size={16} /> Library</Link>
+      <div className={pageClass}>
+        <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <Button asChild>
+            <Link to="/">
+              <ArrowLeft /> Library
+            </Link>
+          </Button>
         </header>
         <QuizDetail quiz={quiz} onStart={startQuiz} />
       </div>
@@ -187,23 +203,35 @@ function QuizSession({ quizId }: { quizId: string }) {
 
   if (!current) {
     return (
-      <div className="page">
+      <div className={pageClass}>
         <StatePanel
           variant="error"
           title="Question unavailable"
           message="The quiz state is inconsistent. Please restart the quiz."
-          action={<Button variant="primary" onClick={startQuiz}>Restart</Button>}
+          action={
+            <Button variant="primary" onClick={startQuiz}>
+              Restart
+            </Button>
+          }
         />
       </div>
     );
   }
 
   return (
-    <div className="page">
-      <header className="topbar">
-        <Link to="/" className="btn"><ArrowLeft size={16} /> Library</Link>
-        <span className="muted">Question {idx + 1} of {questions.length} · Score {score}</span>
-        <Button onClick={startQuiz}><RotateCcw size={16} /> Reshuffle</Button>
+    <div className={pageClass}>
+      <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <Button asChild>
+          <Link to="/">
+            <ArrowLeft /> Library
+          </Link>
+        </Button>
+        <span className="text-sm text-muted-foreground">
+          Question {idx + 1} of {questions.length} · Score {score}
+        </span>
+        <Button onClick={startQuiz}>
+          <RotateCcw /> Reshuffle
+        </Button>
       </header>
       <QuestionView
         key={`${quiz.id}-${idx}-${current.question}`}

@@ -12,16 +12,20 @@ interface QuizResultProps {
 
 export function QuizResult({ title, score, total, onRestart, onDetails }: QuizResultProps) {
   return (
-    <div className="page center">
-      <Trophy size={48} />
-      <h1>{score} / {total}</h1>
-      <p className="muted">{title}</p>
-      <div className="row result-actions">
+    <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4 pt-20 pb-16 text-center">
+      <Trophy className="size-12 text-primary" />
+      <h1 className="mt-3 text-4xl font-bold tracking-tight">
+        {score} / {total}
+      </h1>
+      <p className="mt-1 text-sm text-muted-foreground">{title}</p>
+      <div className="mt-5 flex flex-wrap justify-center gap-2">
         <Button variant="primary" onClick={onRestart}>
-          <RotateCcw size={16} /> Play again (reshuffled)
+          <RotateCcw /> Play again (reshuffled)
         </Button>
         <Button onClick={onDetails}>Quiz details</Button>
-        <Link to="/" className="btn">Library</Link>
+        <Button asChild>
+          <Link to="/">Library</Link>
+        </Button>
       </div>
     </div>
   );
