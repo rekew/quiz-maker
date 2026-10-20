@@ -1,0 +1,21 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Quiz maker backend"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "pydantic>=2.0",
+    "psycopg[binary]>=3.1",
+    "asyncpg>=0.29",
+    "sqlalchemy[asyncio]>=2.0",
+    "alembic>=1.13",
+    "python-dotenv>=1.0",
+    "google-genai>=1.0",
+    "openai>=1.0",
+]
+
+[tool.uv]
+package = false
